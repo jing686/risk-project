@@ -1,0 +1,33 @@
+spring:
+  kafka:
+    bootstrap-servers:
+      - 192.168.91.128:9092
+    consumer:
+      #没有当前消费者组的消费记录时，从头开始读取
+      auto-offset-reset: earliest
+      #关闭kafka的自动提交
+      enable-auto-commit: false
+      #key和value的反序列化器
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      #最大拉取的消息数
+      max-poll-records: 500
+      #消费者组的名称
+      group-id: mygroup
+    listener:
+      #single - 逐条消息处理
+      #batch - 批量消息处理
+      type: single
+      #应答模式 （提交位移）
+      # record - 逐条应答
+      # batch - 批量应答（对应poll方法 一次拉取的消息）
+      # time - 周期性的自动应答 ack-time配置有关
+      # count - 消息的数量，当消费到一定的消息数量后，就会自动的提交位移 ack-count有关
+      # count_time - count和time谁先达到条件，就会触发一个位移提交
+      # manual - 手动提交位移（批量）
+      # manual_immediate - 手动提交位移（逐条）
+      ack-mode: manual_immediate
+      ack-time: 1000
+      ack-count: 10
+      #并发消费的线程数，最后有几个分区，这个地方就写几
+      concurrency: 1

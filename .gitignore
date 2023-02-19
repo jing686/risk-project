@@ -1,0 +1,6 @@
+# Project exclude paths
+/common-data/target/
+/flink-demo/target/
+/ignite-demo/target/
+/kafka-comsumer/target/
+/kafka-producer/target/

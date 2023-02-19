@@ -1,0 +1,21 @@
+server:
+  port: 8082
+spring:
+  kafka:
+    #指定kafka集群地址
+    bootstrap-servers:
+      - 192.168.91.128:9092
+      - 192.168.91.128:9093
+      - 192.168.91.128:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      #kafka 服务器响应模式
+      acks: 1
+      #重试次数
+      retries: 0
+      #批量发送的大小 - 16kb
+      batch-size: 16384
+#      properties:
+#        interceptor:
+#          classes: com.qf.kafka.application.KafkaProviderInterceptor
