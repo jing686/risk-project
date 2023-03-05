@@ -26,11 +26,14 @@
         <scala.binary.version>2.12</scala.binary.version>
         <flink.version>1.13.0</flink.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <ignite.version>2.0.0</ignite.version>
+        <ignite.version>2.14.0</ignite.version>
         <common-data.version>1.0-SNAPSHOT</common-data.version>
         <log4j-to-slf4j.version>2.14.0</log4j-to-slf4j.version>
-        <h2.version>1.4.195</h2.version>
+        <h2.version>1.4.197</h2.version>
         <mysql.version>5.1.47</mysql.version>
+        <ignite-spring-data.version>1.0.0</ignite-spring-data.version>
+        <google-collect.version>snapshot-20080530</google-collect.version>
+        <fastjson.version>2.0.2</fastjson.version>
     </properties>
 
     <dependencyManagement>
@@ -147,8 +150,8 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.ignite</groupId>
-                <artifactId>ignite-spring-data</artifactId>
-                <version>${ignite.version}</version>
+                <artifactId>ignite-spring-data-2.2-ext</artifactId>
+                <version>${ignite-spring-data.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.ignite</groupId>
@@ -165,6 +168,18 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.code.google-collections</groupId>
+                <artifactId>google-collect</artifactId>
+                <version>${google-collect.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
             </dependency>
 
             <dependency>
