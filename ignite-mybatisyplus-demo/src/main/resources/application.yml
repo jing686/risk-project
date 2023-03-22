@@ -1,0 +1,10 @@
+server:
+  port: 8888
+
+spring:
+  datasource:
+    url: jdbc:ignite:thin://192.168.91.101,192.168.91.101,192.168.91.101/
+    driver-class-name: org.apache.ignite.IgniteJdbcThinDriver
+#    schema: classpath:db/schema.sql
+#    data: classpath:db/data.sql
+#    initialization-mode: always #初始化数据库

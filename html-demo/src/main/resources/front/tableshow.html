@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>头寸数据展示</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="plugins/element-ui/index.css">
+    <style>
+        html,
+        body {
+            padding: 0px;
+            margin: 0px;
+        }
+
+        body {
+            height: 100%;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-font-smoothing: antialiased;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica Neue,
+                Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+            margin: 0;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        #app {
+            height: 100%;
+        }
+
+        .el-header {
+            background-color: #B3C0D1;
+            text-align: center;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .el-select {
+            padding-left: 10px;
+            padding-right: 25px;
+        }
+
+        .el-tag {
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <el-container>
+            <el-header>
+                <el-tag type="info">任务ID</el-tag>
+                <el-select v-model="taskId" clearable placeholder="请选择任务ID" @change="taskIdChange">
+                    <el-option v-for="item in taskIds" :key="item" :label="item" :value="item">
+                    </el-option>
+                </el-select>
+                <el-tag type="info">基金ID</el-tag>
+                <el-select v-model="fundId" clearable placeholder="请选择基金ID" @change="fundIdChange">
+                    <el-option v-for="item in fundIds" :key="item" :label="item" :value="item">
+                    </el-option>
+                </el-select>
+                <el-tag type="info">资产单元ID</el-tag>
+                <el-select v-model="assetId" clearable placeholder="请选择资产单元ID" @change="assetIdChange">
+                    <el-option v-for="item in assetIds" :key="item" :label="item" :value="item">
+                    </el-option>
+                </el-select>
+                <el-tag type="info">日期范围</el-tag>
+                <span style="padding-left: 10px;">
+                    <el-date-picker v-model="value1" type="datetimerange" start-placeholder="开始日期"
+                        end-placeholder="结束日期" :default-time="['12:00:00']" @change="timeRangeChange">
+                    </el-date-picker>
+                </span>
+            </el-header>
+            <el-main>
+                <el-table :data="tableData" style="width: 100%" height="700" border>
+                    <el-table-column prop="taskId" label="任务ID" width="70">
+                    </el-table-column>
+                    <el-table-column prop="fundId" label="基金ID" width="70">
+                    </el-table-column>
+                    <el-table-column prop="assetId" label="资产ID" width="80">
+                    </el-table-column>
+                    <el-table-column prop="assetName" label="资产名称" width="160">
+                    </el-table-column>
+                    <el-table-column prop="fundCode" label="基金编号" width="160">
+                    </el-table-column>
+                    <el-table-column prop="fundName" label="基金名称" width="200">
+                    </el-table-column>
+                    <el-table-column prop="execTime" label="执行时间" width="160">
+                    </el-table-column>
+                    <el-table-column prop="o32T0" label="o32T0数据" width="160">
+                    </el-table-column>
+                    <el-table-column prop="o32T1" label="o32T1数据" width="160">
+                    </el-table-column>
+                    <el-table-column prop="positionT0" label="统一头寸T0数据" width="160">
+                    </el-table-column>
+                    <el-table-column prop="positionT1" label="统一头寸T1数据" width="160">
+                    </el-table-column>
+                    <el-table-column prop="deferenceT0" label="T0差异" width="160">
+                    </el-table-column>
+                    <el-table-column prop="deferenceT1" label="T1差异" width="160">
+                    </el-table-column>
+                </el-table>
+            </el-main>
+            <el-footer>
+                <div class="tabListPage" style="text-align: center;">
+                    <el-pagination @size-change="handleSizeChange" @current-change="changeCurPage"
+                        :current-page="page.pageNum" :page-sizes="pageSizes" :page-size="page.pageSize"
+                        layout="total, sizes, prev, pager, next, jumper" :total="page.totalRow">
+                    </el-pagination>
+                </div>
+            </el-footer>
+        </el-container>
+    </div>
+</body>
+<!-- import Vue before Element -->
+<script src="plugins/vue/vue.js"></script>
+<!-- import JavaScript -->
+<script src="plugins/element-ui/index.js"></script>
+<!-- axios在线引入 -->
+<script src="plugins/axios/axios.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                tableData: [{
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                },
+                {
+                    taskId: 001,
+                    fundId: 001,
+                    assetId: 001,
+                    assetName: "测试资产单元",
+                    deferenceT0: 1000.0,
+                    deferenceT1: 2000.0,
+                    execTime: "2023-10-21 15:21",
+                    fundCode: "test01",
+                    fundName: "测试基金",
+                    o32T0: 2000.0,
+                    o32T1: 3000.0,
+                    positionT0: 1000.0,
+                    positionT1: 2000.0
+                }],
+                page: {
+                    "pageNum": 1,
+                    "pageSize": 10,
+                    "pageCount": 100,
+                    "totalRow": 0
+                },
+                requestParam: {
+                    "pageNum": 1,
+                    "pageSize": 10,
+                    "startTime": null,
+                    "endTime": null,
+                    "taskId": null,
+                    "fundId": null,
+                    "assetId": null
+                },
+                // 个数选择器（可修改）
+                pageSizes: [10, 15, 20],
+                taskIds: [],
+                fundIds: [],
+                assetIds: [],
+                taskId: '',
+                fundId: '',
+                assetId: '',
+                value1: ''
+            }
+        },
+        methods: {
+            getData: function () {
+                console.log("ok");
+                axios.post('http:localhost:8002/cmfapi/cmf/position/monitor/deference/page', this.requestParam)
+                    .then((res) => {
+                        // 请求成功返回
+                        if (res.data.data == null) {
+                            this.tableData = [];
+                            return;
+                        }
+                        if (res.data.code == '0000') {
+                            // console.log("接收参数 -->", res.data.data.thisPageList);
+                            this.tableData = res.data.data.thisPageList;
+                            this.page.pageNum = res.data.data.pageNum;
+                            this.page.pageCount = res.data.data.pageCount;
+                            this.page.pageSize = res.data.data.pageSize;
+                            this.page.totalRow = res.data.data.totalRow;
+                        }
+                    })
+                    .catch((err) => {
+                        // 请求失败返回
+                        console.log(err);
+                    })
+                    .then(() => {
+                        // 不管成功失败都会执行，可以用来关闭加载效果等
+
+                    });
+            },
+            changeCurPage(val) {
+                console.log("当前页改变", val);
+                this.requestParam.pageNum = val;
+                this.getData();
+            },
+            getTaskIds() {
+                axios.get('http:localhost:8002/cmfapi/cmf/position/monitor/deference/task').then(response => {
+                    this.taskIds = response.data.data;
+                })
+            },
+            getFundIds() {
+                axios.get('http:localhost:8002/cmfapi/cmf/position/monitor/deference/fundId').then(response => {
+                    this.fundIds = response.data.data;
+                })
+            },
+            getAssetIds() {
+                axios.get('http:localhost:8002/cmfapi/cmf/position/monitor/deference/assetId').then(response => {
+                    this.assetIds = response.data.data;
+                })
+            },
+            // 分页
+            // 每页显示的条数
+            handleSizeChange(val) {
+                console.log("页大小为", val)
+                // 改变每页显示的条数 
+                this.requestParam.pageSize = val;
+                // 点击每页显示的条数时，显示第一页
+                this.getData();
+                // 注意：在改变每页显示的条数时，要将页码显示到第一页
+                this.page.pageNum = 1;
+            },
+            taskIdChange(val) {
+                console.log("选中内容改变", val);
+                this.requestParam.taskId = val;
+                this.getData();
+                this.page.pageNum = 1;
+            },
+            fundIdChange(val) {
+                console.log("选中内容改变", val);
+                this.requestParam.fundId = val;
+                this.getData();
+                this.page.pageNum = 1;
+            },
+            assetIdChange(val) {
+                console.log("assetIdChange内容改变", val);
+                this.requestParam.assetId = val;
+                this.getData();
+                this.page.pageNum = 1;
+            },
+            timeRangeChange(val) {
+                if (val) {
+                    console.log("时间范围改变 -->", val[0]);
+                    this.requestParam.startTime = this.formatDate(val[0]);
+                    this.requestParam.endTime = this.formatDate(val[1]);
+                } else {
+                    this.requestParam.startTime = null;
+                    this.requestParam.endTime = null;
+                }
+                this.getData();
+                this.page.pageNum = 1;
+            },
+            formatDate(val) {
+                const d = new Date(val)
+                const resDate = d.getFullYear() + '-' + this.p((d.getMonth() + 1)) + '-' + this.p(d.getDate())
+                // const resTime = this.p(d.getHours()) + ':' + this.p(d.getMinutes()) + ':' + this.p(d.getSeconds())
+                const resTime = this.p(d.getHours()) + ':' + this.p(d.getMinutes())
+                return resDate + " " + resTime;
+            }, p(s) {
+                return s < 10 ? '0' + s : s
+            }
+        },
+        created() {
+            this.getData();
+            this.getTaskIds();
+            this.getFundIds();
+            this.getAssetIds();
+        }
+    })
+</script>
+
+</html>

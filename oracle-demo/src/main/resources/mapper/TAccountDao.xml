@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zj.dao.TAccountDao">
+
+    <resultMap type="com.zj.entity.TAccount" id="TAccountMap">
+        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="owneruuid" column="OWNERUUID" jdbcType="INTEGER"/>
+        <result property="ownertype" column="OWNERTYPE" jdbcType="INTEGER"/>
+        <result property="areaid" column="AREAID" jdbcType="INTEGER"/>
+        <result property="year" column="YEAR" jdbcType="VARCHAR"/>
+        <result property="month" column="MONTH" jdbcType="VARCHAR"/>
+        <result property="num0" column="NUM0" jdbcType="INTEGER"/>
+        <result property="num1" column="NUM1" jdbcType="INTEGER"/>
+        <result property="usenum" column="USENUM" jdbcType="INTEGER"/>
+        <result property="meteruser" column="METERUSER" jdbcType="INTEGER"/>
+        <result property="meterdate" column="METERDATE" jdbcType="TIMESTAMP"/>
+        <result property="money" column="MONEY" jdbcType="VARCHAR"/>
+        <result property="isfee" column="ISFEE" jdbcType="VARCHAR"/>
+        <result property="feedate" column="FEEDATE" jdbcType="TIMESTAMP"/>
+        <result property="feeuser" column="FEEUSER" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into WATERUSER.T_ACCOUNT(OWNERUUID, OWNERTYPE, AREAID, YEAR, MONTH, NUM0, NUM1, USENUM, METERUSER, METERDATE, MONEY, ISFEE, FEEDATE, FEEUSER)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.owneruuid}, #{entity.ownertype}, #{entity.areaid}, #{entity.year}, #{entity.month}, #{entity.num0}, #{entity.num1}, #{entity.usenum}, #{entity.meteruser}, #{entity.meterdate}, #{entity.money}, #{entity.isfee}, #{entity.feedate}, #{entity.feeuser})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into WATERUSER.T_ACCOUNT(OWNERUUID, OWNERTYPE, AREAID, YEAR, MONTH, NUM0, NUM1, USENUM, METERUSER, METERDATE, MONEY, ISFEE, FEEDATE, FEEUSER)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.owneruuid}, #{entity.ownertype}, #{entity.areaid}, #{entity.year}, #{entity.month}, #{entity.num0}, #{entity.num1}, #{entity.usenum}, #{entity.meteruser}, #{entity.meterdate}, #{entity.money}, #{entity.isfee}, #{entity.feedate}, #{entity.feeuser})
+        </foreach>
+        on duplicate key update
+         OWNERUUID = values(OWNERUUID) , OWNERTYPE = values(OWNERTYPE) , AREAID = values(AREAID) , YEAR = values(YEAR) , MONTH = values(MONTH) , NUM0 = values(NUM0) , NUM1 = values(NUM1) , USENUM = values(USENUM) , METERUSER = values(METERUSER) , METERDATE = values(METERDATE) , MONEY = values(MONEY) , ISFEE = values(ISFEE) , FEEDATE = values(FEEDATE) , FEEUSER = values(FEEUSER)     </insert>
+
+</mapper>
+

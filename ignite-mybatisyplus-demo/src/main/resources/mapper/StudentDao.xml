@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zj.dao.StudentDao">
+
+    <resultMap type="com.zj.entity.Student" id="StudentMap">
+        <result property="studid" column="STUDID" jdbcType="INTEGER"/>
+        <result property="name" column="NAME" jdbcType="VARCHAR"/>
+        <result property="email" column="EMAIL" jdbcType="VARCHAR"/>
+        <result property="dob" column="DOB" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="studid" useGeneratedKeys="true">
+        insert into PUBLIC.STUDENT(NAME, EMAIL, DOB)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.name}, #{entity.email}, #{entity.dob})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="studid" useGeneratedKeys="true">
+        insert into PUBLIC.STUDENT(NAME, EMAIL, DOB)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.name}, #{entity.email}, #{entity.dob})
+        </foreach>
+        on duplicate key update
+         NAME = values(NAME) , EMAIL = values(EMAIL) , DOB = values(DOB)     </insert>
+
+    <select id="findStudentsById" parameterType="java.lang.String" resultMap="StudentResult">
+        SELECT * FROM student WHERE studid = #{studentId}
+    </select>
+
+    <resultMap type="com.zj.entity.Student" id="StudentResult">
+        <result property="studid" column="studid"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="dob" column="dob"/>
+    </resultMap>
+</mapper>
+

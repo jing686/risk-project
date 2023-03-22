@@ -14,6 +14,10 @@
         <module>flink-demo</module>
         <module>common-data</module>
         <module>ignite-demo</module>
+        <module>oracle-demo</module>
+        <module>html-demo</module>
+        <module>test-demo</module>
+        <module>ignite-mybatisyplus-demo</module>
     </modules>
 
     <properties>
@@ -21,6 +25,7 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-boot.version>2.3.0.RELEASE</spring-boot.version>
+<!--        <spring-boot.version>2.4.5</spring-boot.version>-->
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <spring-kafka.version>2.5.0.RELEASE</spring-kafka.version>
         <scala.binary.version>2.12</scala.binary.version>

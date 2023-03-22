@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zj.dao.PersonDao">
+
+    <resultMap type="com.zj.entity.Person" id="PersonMap">
+        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="firstname" column="FIRSTNAME" jdbcType="VARCHAR"/>
+        <result property="phone" column="PHONE" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into PUBLIC.PERSON(FIRSTNAME, PHONE)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.firstname}, #{entity.phone})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into PUBLIC.PERSON(FIRSTNAME, PHONE)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.firstname}, #{entity.phone})
+        </foreach>
+        on duplicate key update
+         FIRSTNAME = values(FIRSTNAME) , PHONE = values(PHONE)     </insert>
+
+</mapper>
+

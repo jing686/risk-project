@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zj.dao.TPricetableDao">
+
+    <resultMap type="com.zj.entity.TPricetable" id="TPricetableMap">
+        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="price" column="PRICE" jdbcType="VARCHAR"/>
+        <result property="ownertypeid" column="OWNERTYPEID" jdbcType="INTEGER"/>
+        <result property="minnum" column="MINNUM" jdbcType="INTEGER"/>
+        <result property="maxnum" column="MAXNUM" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into WATERUSER.T_PRICETABLE(PRICE, OWNERTYPEID, MINNUM, MAXNUM)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.price}, #{entity.ownertypeid}, #{entity.minnum}, #{entity.maxnum})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into WATERUSER.T_PRICETABLE(PRICE, OWNERTYPEID, MINNUM, MAXNUM)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.price}, #{entity.ownertypeid}, #{entity.minnum}, #{entity.maxnum})
+        </foreach>
+        on duplicate key update
+         PRICE = values(PRICE) , OWNERTYPEID = values(OWNERTYPEID) , MINNUM = values(MINNUM) , MAXNUM = values(MAXNUM)     </insert>
+
+</mapper>
+

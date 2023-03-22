@@ -260,6 +260,7 @@ public class ThreadTest {
         });
 
         Integer result1 = futrue1.get();
+        System.out.println("result1 = " + result1);
     }
 
     /**
@@ -307,6 +308,7 @@ public class ThreadTest {
                         return number;
                     }
                 });
+
         CompletableFuture<Integer> result = future1
                 .thenCombine(future2, new BiFunction<Integer, Integer, Integer>() {
                     @Override

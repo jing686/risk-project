@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zj.dao.TAddressDao">
+
+    <resultMap type="com.zj.entity.TAddress" id="TAddressMap">
+        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="name" column="NAME" jdbcType="VARCHAR"/>
+        <result property="areaid" column="AREAID" jdbcType="INTEGER"/>
+        <result property="operatorid" column="OPERATORID" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap type="com.zj.dto.PageResult" id="PageAddressResultMap">
+        <result property="count" column="total" jdbcType="INTEGER"/>
+        <result property="start" column="startPage" jdbcType="INTEGER"/>
+        <result property="size" column="pageSize" jdbcType="INTEGER"/>
+        <result property="totalPage" column="totalPage" jdbcType="INTEGER"/>
+        <collection property="addressList" ofType="com.zj.entity.TAddress">
+            <result property="id" column="ID" jdbcType="INTEGER"/>
+            <result property="name" column="NAME" jdbcType="VARCHAR"/>
+            <result property="areaid" column="AREAID" jdbcType="INTEGER"/>
+            <result property="operatorid" column="OPERATORID" jdbcType="INTEGER"/>
+        </collection>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into WATERUSER.T_ADDRESS(NAME, AREAID, OPERATORID)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.name}, #{entity.areaid}, #{entity.operatorid})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into WATERUSER.T_ADDRESS(NAME, AREAID, OPERATORID)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.name}, #{entity.areaid}, #{entity.operatorid})
+        </foreach>
+        on duplicate key update
+         NAME = values(NAME) , AREAID = values(AREAID) , OPERATORID = values(OPERATORID)     </insert>
+
+    <select id="queryPageInfo" parameterType="com.zj.dto.PageAddress"
+            resultMap="PageAddressResultMap" >
+        SELECT tt.* FROM
+        (
+        <!--前端分页需要 total总记录-->
+        SELECT t.*, ROWNUM rown, COUNT (*) OVER () total, #{start} startPage, #{size} pageSize, ceil((COUNT (*) OVER ()) / #{size}) totalPage FROM
+        (
+        select * from T_ADDRESS
+        <where>
+            <if test="id != null and id !=''">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+        </where>
+        )t
+        )tt
+        where tt.rown > (#{start} - 1) * #{size} and tt.rown <![CDATA[<=]]> #{size} * #{start}
+    </select>
+
+</mapper>
+

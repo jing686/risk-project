@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/ignite")
 @Slf4j
-public class IgniteController {
+public class PersonController {
 
     @Resource
     private PersonRepository personRepository;

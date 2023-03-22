@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zj.dao.TOperatorDao">
+
+    <resultMap type="com.zj.entity.TOperator" id="TOperatorMap">
+        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="name" column="NAME" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="" useGeneratedKeys="true">
+        insert into WATERUSER.T_OPERATOR(ID, NAME)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.id}, #{entity.name})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="" useGeneratedKeys="true">
+        insert into WATERUSER.T_OPERATOR(ID, NAME)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.name})
+        </foreach>
+        on duplicate key update
+         ID = values(ID) , NAME = values(NAME)     </insert>
+
+</mapper>
+
