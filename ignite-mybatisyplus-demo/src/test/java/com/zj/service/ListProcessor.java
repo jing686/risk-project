@@ -69,7 +69,7 @@ public class ListProcessor {
         // 输出结果
         System.out.println(resultList);
 
-        // 关闭ExecutorService 111 adfas
+        // 关闭ExecutorService 111 adfas adf adfadsf
         executor.shutdown();
     }
 }
