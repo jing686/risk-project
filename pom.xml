@@ -18,6 +18,8 @@
         <module>html-demo</module>
         <module>test-demo</module>
         <module>ignite-mybatisyplus-demo</module>
+        <module>multiple-data-sources</module>
+        <module>oracle-import</module>
     </modules>
 
     <properties>
@@ -39,6 +41,7 @@
         <ignite-spring-data.version>1.0.0</ignite-spring-data.version>
         <google-collect.version>snapshot-20080530</google-collect.version>
         <fastjson.version>2.0.2</fastjson.version>
+        <ojdbc.version>11.2.0.3</ojdbc.version>
     </properties>
 
     <dependencyManagement>
@@ -191,6 +194,12 @@
                 <groupId>com.zj</groupId>
                 <artifactId>common-data</artifactId>
                 <version>${common-data.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc6</artifactId>
+                <version>${ojdbc.version}</version>
             </dependency>
 
         </dependencies>

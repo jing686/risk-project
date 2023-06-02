@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zj.dao.slave.TAddressDao">
+
+    <resultMap type="com.zj.entity.TAddress" id="TAddressMap">
+        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="name" column="NAME" jdbcType="VARCHAR"/>
+        <result property="areaid" column="AREAID" jdbcType="INTEGER"/>
+        <result property="operatorid" column="OPERATORID" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="selectAll" resultType="com.zj.entity.TAddress">
+        select * from t_address
+    </select>
+
+</mapper>
+

@@ -1,0 +1,12 @@
+###.sql文件导入Oracle
+POST {{oracle_import}}/import
+Content-Type: application/json
+
+{
+  "ip": "192.168.119.10",
+  "port": "1521",
+  "serviceName": "orcl",
+  "username": "wateruser",
+  "password": "itcast",
+  "sqlPath": "C:\\Users\\13661\\Desktop\\test.sql"
+}
