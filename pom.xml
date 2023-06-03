@@ -20,6 +20,7 @@
         <module>ignite-mybatisyplus-demo</module>
         <module>multiple-data-sources</module>
         <module>oracle-import</module>
+        <module>xxl-job-demo</module>
     </modules>
 
     <properties>
