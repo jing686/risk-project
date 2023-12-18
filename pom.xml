@@ -21,6 +21,9 @@
         <module>multiple-data-sources</module>
         <module>oracle-import</module>
         <module>xxl-job-demo</module>
+        <module>kafka-demo</module>
+        <module>spring-data-redis-demo</module>
+        <module>mybatis-plus-demo</module>
     </modules>
 
     <properties>

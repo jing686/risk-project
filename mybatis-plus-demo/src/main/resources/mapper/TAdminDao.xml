@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zj.mybatisplus.dao.TAdminDao">
+
+    <resultMap type="com.zj.mybatisplus.entity.TAdmin" id="TAdminMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="birthday" column="birthday" jdbcType="TIMESTAMP"/>
+        <result property="power" column="power" jdbcType="VARCHAR"/>
+        <result property="jiguan" column="jiguan" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into webtest.t_admin(username, password, name, sex, birthday, power, jiguan)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.username}, #{entity.password}, #{entity.name}, #{entity.sex}, #{entity.birthday}, #{entity.power},
+            #{entity.jiguan})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into webtest.t_admin(username, password, name, sex, birthday, power, jiguan)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.username}, #{entity.password}, #{entity.name}, #{entity.sex}, #{entity.birthday}, #{entity.power},
+            #{entity.jiguan})
+        </foreach>
+        on duplicate key update
+        username = values(username) , password = values(password) , name = values(name) , sex = values(sex) , birthday =
+        values(birthday) , power = values(power) , jiguan = values(jiguan)
+    </insert>
+
+</mapper>
+

@@ -18,7 +18,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: zj adsf
@@ -93,5 +95,21 @@ public class DaoTest {
         String s = JSON.toJSONString(pageAddress);
         System.out.println(s);
         System.out.println(pageResults);
+    }
+
+    public int lengthOfLongestSubstring(String s) {
+        int max = 0;
+        int left = 0;
+        if (s.length() == 0)
+            return 0;
+        Map<Character, Integer> map = new HashMap<>();
+        for (int i = 0; i < s.length(); i++) {
+            if (map.containsKey(s.charAt(i))) {
+                left = Math.max(left, map.get(s.charAt(i)) + 1);
+            }
+            map.put(s.charAt(i), i);
+            max = Math.max(max, i - left + 1);
+        }
+        return max;
     }
 }
